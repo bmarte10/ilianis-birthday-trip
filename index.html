@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Birthday Vacation Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --cream: #FAF7F2;
+  --sand: #F0EAE0;
+  --warm-gray: #C8BFB0;
+  --dark: #1A1714;
+  --brown: #5C4A3A;
+  --accent: #C9714A;
+  --accent-light: #F2DDD3;
+  --green: #4A7C59;
+  --green-light: #D6EAD9;
+  --gold: #B8963E;
+  --gold-light: #F5EDD6;
+  --danger: #A33B2A;
+  --danger-light: #F5DDD9;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+  font-size: 15px;
+}
+
+/* HEADER */
+.header {
+  background: var(--dark);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.trip-name-input {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 280px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 2px;
+}
+
+.trip-name-input::placeholder { color: rgba(255,255,255,0.4); }
+
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-input {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 5px 10px;
+}
+
+.date-input::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; }
+
+.date-arrow { color: rgba(255,255,255,0.4); font-size: 14px; }
+
+/* NAV */
+.nav {
+  background: var(--sand);
+  border-bottom: 1px solid var(--warm-gray);
+  padding: 0 32px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.nav-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--brown);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s;
+  letter-spacing: .3px;
+}
+
+.nav-btn:hover { color: var(--dark); }
+.nav-btn.active { color: var(--dark); border-bottom-color: var(--accent); font-weight: 500; }
+
+/* MAIN */
+.main { padding: 28px 32px; max-width: 980px; margin: 0 auto; }
+
+.section { display: none; }
+.section.active { display: block; }
+
+/* CARDS */
+.card {
+  background: #fff;
+  border: 1px solid var(--warm-gray);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: var(--dark);
+}
+
+/* FORM ELEMENTS */
+label { font-size: 12px; color: var(--brown); display: block; margin-bottom: 4px; letter-spacing: .3px; text-transform: uppercase; font-weight: 500; }
+
+input[type="text"], input[type="email"], input[type="number"], input[type="date"], input[type="time"], select, textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--warm-gray);
+  border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  background: var(--cream);
+  color: var(--dark);
+  transition: border-color .2s;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 72px; }
+select { cursor: pointer; }
+
+.row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+.row > * { flex: 1; min-width: 130px; }
+.row > .shrink { flex: none; }
+
+/* BUTTONS */
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--warm-gray);
+  background: #fff;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.btn:hover { background: var(--sand); }
+
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { background: #b85e38; border-color: #b85e38; }
+
+.btn-danger { background: var(--danger-light); color: var(--danger); border-color: #e0b5b0; }
+.btn-danger:hover { background: #f0c5c0; }
+
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--brown); }
+.btn-ghost:hover { background: var(--sand); }
+
+/* METRICS GRID */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+
+.metric {
+  background: #fff;
+  border: 1px solid var(--warm-gray);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  text-align: center;
+}
+
+.metric .m-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--brown); font-weight: 500; }
+.metric .m-val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin-top: 4px; color: var(--dark); }
+
+/* GUEST ROWS */
+.guest-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--sand);
+}
+.guest-row:last-child { border-bottom: none; }
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* BADGES */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-gray { background: var(--sand); color: var(--brown); }
+.badge-gold { background: var(--gold-light); color: var(--gold); }
+
+/* ROOM BLOCKS */
+.room-block {
+  background: var(--cream);
+  border: 1px solid var(--warm-gray);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+.room-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  border: 1px solid var(--warm-gray);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+  margin: 2px;
+}
+
+/* FLIGHTS */
+.flight-card {
+  background: var(--cream);
+  border: 1px solid var(--warm-gray);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.flight-dir {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.flight-route {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.flight-route .arrow { color: var(--warm-gray); }
+
+/* ITINERARY */
+.day-block {
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+  margin-bottom: 18px;
+}
+
+.day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.day-date { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--brown); }
+.day-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 500; }
+
+.activity-list { margin: 6px 0 10px 0; list-style: none; }
+.activity-list li { font-size: 13px; padding: 4px 0; color: var(--dark); display: flex; gap: 6px; }
+.activity-list li::before { content: '·'; color: var(--accent); font-weight: 700; }
+
+/* COST SPLITTER */
+.cost-item { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--sand); }
+.cost-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.cost-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cost-label { font-weight: 500; font-size: 15px; }
+.cost-total-badge { font-size: 13px; font-weight: 500; color: var(--brown); }
+
+.assign-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--sand);
+}
+.assign-row:last-child { border-bottom: none; }
+
+.assign-name { flex: 1; font-size: 13px; }
+.assign-input { width: 90px !important; text-align: right; padding: 5px 8px !important; font-size: 13px !important; }
+.remaining { text-align: right; font-size: 12px; color: var(--brown); margin-top: 6px; }
+
+.total-bar {
+  background: var(--dark);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+.per-person-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--sand);
+}
+.per-person-row:last-child { border-bottom: none; }
+.per-person-amt { margin-left: auto; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 500; }
+
+/* AIRBNB */
+.airbnb-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.airbnb-photo-grid img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--warm-gray);
+}
+
+/* DASHBOARD GRID */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 600px) { .dash-grid { grid-template-columns: 1fr; } }
+
+.dash-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--brown);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.dash-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--sand);
+  font-size: 13px;
+}
+.dash-row:last-child { border-bottom: none; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--warm-gray); border-radius: 3px; }
+
+/* SECTION DIVIDER */
+.section-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--brown);
+  padding: 0 4px;
+  margin: 4px 0 8px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--brown);
+  margin-top: 5px;
+}
+
+.empty { font-size: 13px; color: var(--warm-gray); font-style: italic; }
+
+input[type="date"], input[type="time"] { color-scheme: light; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-mark">🎂</div>
+    <input class="trip-name-input" id="tripName" value="Birthday Trip 2025" placeholder="Name your trip..." />
+  </div>
+  <div class="date-range">
+    <input class="date-input" type="date" id="dateStart" />
+    <span class="date-arrow">→</span>
+    <input class="date-input" type="date" id="dateEnd" />
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('dashboard',this)">Dashboard</button>
+  <button class="nav-btn" onclick="showTab('rsvp',this)">RSVP List</button>
+  <button class="nav-btn" onclick="showTab('rooms',this)">Rooms</button>
+  <button class="nav-btn" onclick="showTab('airbnb',this)">Airbnb</button>
+  <button class="nav-btn" onclick="showTab('flights',this)">Flights</button>
+  <button class="nav-btn" onclick="showTab('itinerary',this)">Itinerary</button>
+  <button class="nav-btn" onclick="showTab('costs',this)">Cost Splitter</button>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div id="tab-dashboard" class="section active">
+  <div class="metrics-grid" id="dash-metrics"></div>
+  <div class="dash-grid">
+    <div class="card">
+      <div class="dash-section-label">Guest list</div>
+      <div id="dash-rsvp"></div>
+    </div>
+    <div class="card">
+      <div class="dash-section-label">Expenses</div>
+      <div id="dash-costs"></div>
+    </div>
+    <div class="card">
+      <div class="dash-section-label">Flights</div>
+      <div id="dash-flights"></div>
+    </div>
+    <div class="card">
+      <div class="dash-section-label">Itinerary</div>
+      <div id="dash-itin"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RSVP -->
+<div id="tab-rsvp" class="section">
+  <div class="card">
+    <div class="card-title">Add guest</div>
+    <div class="row">
+      <div><label>Name</label><input type="text" id="rsvp-name" placeholder="Full name" /></div>
+      <div><label>Email (optional)</label><input type="email" id="rsvp-email" placeholder="email@example.com" /></div>
+      <div class="shrink"><label>&nbsp;</label><button class="btn btn-primary" onclick="addGuest()">Add guest</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Guest list</div>
+    <div id="rsvp-list"><p class="empty">No guests yet.</p></div>
+  </div>
+</div>
+
+<!-- ROOMS -->
+<div id="tab-rooms" class="section">
+  <div class="card">
+    <div class="card-title">Create room</div>
+    <div class="row">
+      <div><label>Room name</label><input type="text" id="room-name" placeholder="e.g. Master Suite, Bunk Room..." /></div>
+      <div class="shrink"><label>&nbsp;</label><button class="btn btn-primary" onclick="addRoom()">Create room</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Room assignments</div>
+    <div id="room-list"><p class="empty">No rooms created yet.</p></div>
+  </div>
+</div>
+
+<!-- AIRBNB -->
+<div id="tab-airbnb" class="section">
+  <div class="card">
+    <div class="card-title">Listing link</div>
+    <div class="row">
+      <div><label>Airbnb URL</label><input type="text" id="airbnb-url" placeholder="https://www.airbnb.com/rooms/..." /></div>
+      <div class="shrink"><label>&nbsp;</label><a id="airbnb-open-btn" href="#" target="_blank" class="btn btn-primary" onclick="openAirbnb(event)">Open listing</a></div>
+    </div>
+    <p class="hint">Airbnb blocks direct loading — fill in details below and paste photo URLs to display them here.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Property details</div>
+    <div class="row" style="margin-bottom:12px">
+      <div><label>Property name</label><input type="text" id="ab-propname" placeholder="Beachfront Villa" /></div>
+      <div><label>Location</label><input type="text" id="ab-location" placeholder="Miami Beach, FL" /></div>
+    </div>
+    <div class="row" style="margin-bottom:12px">
+      <div><label>Nightly rate ($)</label><input type="number" id="ab-rate" placeholder="350" /></div>
+      <div><label>Bedrooms</label><input type="number" id="ab-beds" placeholder="4" /></div>
+      <div><label>Bathrooms</label><input type="number" id="ab-baths" placeholder="3" /></div>
+    </div>
+    <div style="margin-bottom:14px"><label>Notes / amenities</label><textarea id="ab-notes" placeholder="Pool, hot tub, ocean view, free parking..."></textarea></div>
+    <div>
+      <label>Photo URLs (one per line)</label>
+      <textarea id="ab-photos" placeholder="https://...&#10;https://..."></textarea>
+      <button class="btn btn-sm" style="margin-top:8px" onclick="renderPhotos()">Load photos</button>
+    </div>
+    <div class="airbnb-photo-grid" id="ab-photo-grid"></div>
+    <div style="margin-top:14px"><button class="btn btn-primary" onclick="saveAirbnb()">Save listing</button></div>
+  </div>
+</div>
+
+<!-- FLIGHTS -->
+<div id="tab-flights" class="section">
+  <div class="card">
+    <div class="card-title">Add flight</div>
+    <div class="row" style="margin-bottom:12px">
+      <div>
+        <label>Direction</label>
+        <select id="fl-dir"><option value="outbound">Outbound</option><option value="return">Return</option></select>
+      </div>
+      <div><label>Airline</label><input type="text" id="fl-airline" placeholder="Delta" /></div>
+      <div><label>Flight number</label><input type="text" id="fl-num" placeholder="DL 412" /></div>
+    </div>
+    <div class="row" style="margin-bottom:12px">
+      <div><label>From</label><input type="text" id="fl-from" placeholder="JFK" /></div>
+      <div><label>To</label><input type="text" id="fl-to" placeholder="MIA" /></div>
+      <div><label>Date</label><input type="date" id="fl-date" /></div>
+    </div>
+    <div class="row">
+      <div><label>Departs</label><input type="time" id="fl-dep" /></div>
+      <div><label>Arrives</label><input type="time" id="fl-arr" /></div>
+      <div><label>Cost per person ($)</label><input type="number" id="fl-cost" placeholder="0" /></div>
+      <div class="shrink"><label>&nbsp;</label><button class="btn btn-primary" onclick="addFlight()">Add flight</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Flight details</div>
+    <div id="flight-list"><p class="empty">No flights added yet.</p></div>
+  </div>
+</div>
+
+<!-- ITINERARY -->
+<div id="tab-itinerary" class="section">
+  <div class="card">
+    <div class="card-title">Add day</div>
+    <div class="row">
+      <div><label>Date</label><input type="date" id="itin-date" /></div>
+      <div><label>Day title</label><input type="text" id="itin-title" placeholder="Beach Day, City Tour..." /></div>
+      <div class="shrink"><label>&nbsp;</label><button class="btn btn-primary" onclick="addDay()">Add day</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Schedule</div>
+    <div id="itin-list"><p class="empty">No days planned yet.</p></div>
+  </div>
+</div>
+
+<!-- COSTS -->
+<div id="tab-costs" class="section">
+  <div class="card">
+    <div class="card-title">Add expense</div>
+    <div class="row">
+      <div><label>Description</label><input type="text" id="cost-desc" placeholder="Airbnb, dinner, activities..." /></div>
+      <div><label>Total amount ($)</label><input type="number" id="cost-amt" placeholder="0" /></div>
+      <div class="shrink"><label>&nbsp;</label><button class="btn btn-primary" onclick="addCost()">Add expense</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Expenses &amp; assignments</div>
+    <div id="cost-list"><p class="empty">No expenses added yet.</p></div>
+    <div class="total-bar" id="cost-total-bar">
+      <span>Total budget</span>
+      <span id="cost-total-amt">$0.00</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Per-person summary</div>
+    <div id="per-person-list"><p class="empty">Add guests and expenses to see breakdown.</p></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+var S = {
+  guests: [],
+  rooms: [],
+  flights: [],
+  itinerary: [],
+  costs: [],
+  airbnb: { url:'', propname:'', location:'', rate:'', beds:'', baths:'', notes:'', photos:[] }
+};
+
+function showTab(t, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + t).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (t === 'dashboard') renderDash();
+}
+
+function ini(n) { return n.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2); }
+
+// ── RSVP ──
+function addGuest() {
+  var n = document.getElementById('rsvp-name').value.trim();
+  var e = document.getElementById('rsvp-email').value.trim();
+  if (!n) return;
+  S.guests.push({ id: Date.now(), name: n, email: e, confirmed: false });
+  document.getElementById('rsvp-name').value = '';
+  document.getElementById('rsvp-email').value = '';
+  renderRSVP(); syncRoomDropdowns(); syncCostAssigns();
+}
+
+function toggleConfirm(id) {
+  var g = S.guests.find(x => x.id === id);
+  if (g) g.confirmed = !g.confirmed;
+  renderRSVP();
+}
+
+function removeGuest(id) {
+  S.guests = S.guests.filter(x => x.id !== id);
+  S.rooms.forEach(r => { r.guests = r.guests.filter(g => g !== id); });
+  S.costs.forEach(c => { delete c.assigns[id]; });
+  renderRSVP(); renderRooms(); renderCosts();
+}
+
+function renderRSVP() {
+  var el = document.getElementById('rsvp-list');
+  if (!S.guests.length) { el.innerHTML = '<p class="empty">No guests yet.</p>'; return; }
+  el.innerHTML = S.guests.map(g => `
+    <div class="guest-row">
+      <div class="avatar">${ini(g.name)}</div>
+      <div style="flex:1">
+        <div style="font-weight:500;font-size:14px">${g.name}</div>
+        ${g.email ? `<div style="font-size:12px;color:var(--brown)">${g.email}</div>` : ''}
+      </div>
+      <span class="badge ${g.confirmed ? 'badge-green' : 'badge-gray'}" onclick="toggleConfirm(${g.id})" title="Click to toggle">${g.confirmed ? 'Confirmed' : 'Pending'}</span>
+      <button class="btn btn-danger btn-sm" onclick="removeGuest(${g.id})">Remove</button>
+    </div>`).join('');
+}
+
+// ── ROOMS ──
+function addRoom() {
+  var n = document.getElementById('room-name').value.trim();
+  if (!n) return;
+  S.rooms.push({ id: Date.now(), name: n, guests: [] });
+  document.getElementById('room-name').value = '';
+  renderRooms();
+}
+
+function removeRoom(id) { S.rooms = S.rooms.filter(r => r.id !== id); renderRooms(); }
+
+function toggleRoomGuest(roomId, guestId) {
+  var room = S.rooms.find(r => r.id === roomId);
+  if (!room) return;
+  if (room.guests.includes(guestId)) {
+    room.guests = room.guests.filter(g => g !== guestId);
+  } else {
+    room.guests.push(guestId);
+  }
+  renderRooms();
+}
+
+function syncRoomDropdowns() { renderRooms(); }
+
+function renderRooms() {
+  var el = document.getElementById('room-list');
+  if (!S.rooms.length) { el.innerHTML = '<p class="empty">No rooms created yet.</p>'; return; }
+  el.innerHTML = S.rooms.map(r => `
+    <div class="room-block">
+      <div class="room-title">
+        <span>${r.name}</span>
+        <button class="btn btn-danger btn-sm" onclick="removeRoom(${r.id})">Remove</button>
+      </div>
+      ${S.guests.length ? `
+        <div style="font-size:12px;color:var(--brown);margin-bottom:8px">Assign guests (click to toggle):</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${S.guests.map(g => `
+            <div class="chip" style="${r.guests.includes(g.id) ? 'background:var(--accent-light);border-color:var(--accent);color:var(--accent);' : ''}" onclick="toggleRoomGuest(${r.id},${g.id})" style="cursor:pointer">
+              <div style="width:18px;height:18px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--accent)">${ini(g.name)}</div>
+              ${g.name.split(' ')[0]}
+            </div>`).join('')}
+        </div>` : '<p class="empty">Add guests on the RSVP tab first.</p>'}
+    </div>`).join('');
+}
+
+// ── AIRBNB ──
+function openAirbnb(e) {
+  var url = document.getElementById('airbnb-url').value.trim();
+  if (!url) { e.preventDefault(); return; }
+  document.getElementById('airbnb-open-btn').href = url;
+}
+
+function renderPhotos() {
+  var lines = document.getElementById('ab-photos').value.split('\n').map(l => l.trim()).filter(Boolean);
+  S.airbnb.photos = lines;
+  var el = document.getElementById('ab-photo-grid');
+  el.innerHTML = lines.map(u => `<img src="${u}" onerror="this.style.display='none'" alt="Listing photo" />`).join('');
+}
+
+function saveAirbnb() {
+  S.airbnb.url = document.getElementById('airbnb-url').value;
+  S.airbnb.propname = document.getElementById('ab-propname').value;
+  S.airbnb.location = document.getElementById('ab-location').value;
+  S.airbnb.rate = document.getElementById('ab-rate').value;
+  S.airbnb.beds = document.getElementById('ab-beds').value;
+  S.airbnb.baths = document.getElementById('ab-baths').value;
+  S.airbnb.notes = document.getElementById('ab-notes').value;
+  alert('Listing saved!');
+}
+
+// ── FLIGHTS ──
+function addFlight() {
+  S.flights.push({
+    id: Date.now(),
+    dir: document.getElementById('fl-dir').value,
+    airline: document.getElementById('fl-airline').value,
+    num: document.getElementById('fl-num').value,
+    from: document.getElementById('fl-from').value,
+    to: document.getElementById('fl-to').value,
+    date: document.getElementById('fl-date').value,
+    dep: document.getElementById('fl-dep').value,
+    arr: document.getElementById('fl-arr').value,
+    cost: parseFloat(document.getElementById('fl-cost').value) || 0
+  });
+  ['fl-airline','fl-num','fl-from','fl-to','fl-dep','fl-arr'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fl-cost').value = '';
+  renderFlights();
+}
+
+function removeFlight(id) { S.flights = S.flights.filter(f => f.id !== id); renderFlights(); }
+
+function fmtTime(t) { if (!t) return ''; var p = t.split(':'); var h = parseInt(p[0]); var m = p[1]; return (h % 12 || 12) + ':' + m + ' ' + (h < 12 ? 'AM' : 'PM'); }
+function fmtDate(d) { if (!d) return ''; var p = d.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])-1] + ' ' + parseInt(p[2]) + ', ' + p[0]; }
+
+function renderFlights() {
+  var el = document.getElementById('flight-list');
+  if (!S.flights.length) { el.innerHTML = '<p class="empty">No flights added yet.</p>'; return; }
+  var out = S.flights.filter(f => f.dir === 'outbound');
+  var ret = S.flights.filter(f => f.dir === 'return');
+  var html = '';
+  if (out.length) {
+    html += '<div class="section-group-label">Outbound</div>';
+    html += out.map(flightCard).join('');
+  }
+  if (ret.length) {
+    html += '<div class="section-group-label" style="margin-top:14px">Return</div>';
+    html += ret.map(flightCard).join('');
+  }
+  el.innerHTML = html;
+}
+
+function flightCard(f) {
+  return `<div class="flight-card">
+    <span class="flight-dir">${f.dir}</span>
+    <div>
+      <div style="font-weight:500;font-size:13px">${f.airline} ${f.num}</div>
+      <div style="font-size:11px;color:var(--brown)">${fmtDate(f.date)}</div>
+    </div>
+    <div class="flight-route">
+      <span>${f.from}${f.dep ? ' ' + fmtTime(f.dep) : ''}</span>
+      <span class="arrow">→</span>
+      <span>${f.to}${f.arr ? ' ' + fmtTime(f.arr) : ''}</span>
+    </div>
+    ${f.cost ? `<span style="margin-left:auto;font-size:12px;color:var(--brown)">$${f.cost.toFixed(2)}/person</span>` : ''}
+    <button class="btn btn-danger btn-sm" onclick="removeFlight(${f.id})">Remove</button>
+  </div>`;
+}
+
+// ── ITINERARY ──
+function addDay() {
+  var d = document.getElementById('itin-date').value;
+  var t = document.getElementById('itin-title').value.trim();
+  if (!d || !t) return;
+  S.itinerary.push({ id: Date.now(), date: d, title: t, activities: [] });
+  S.itinerary.sort((a, b) => a.date.localeCompare(b.date));
+  document.getElementById('itin-date').value = '';
+  document.getElementById('itin-title').value = '';
+  renderItinerary();
+}
+
+function removeDay(id) { S.itinerary = S.itinerary.filter(d => d.id !== id); renderItinerary(); }
+
+function addActivity(dayId) {
+  var inp = document.getElementById('act-' + dayId);
+  var txt = inp.value.trim();
+  if (!txt) return;
+  var day = S.itinerary.find(d => d.id === dayId);
+  if (day) day.activities.push(txt);
+  inp.value = '';
+  renderItinerary();
+}
+
+function removeActivity(dayId, idx) {
+  var day = S.itinerary.find(d => d.id === dayId);
+  if (day) day.activities.splice(idx, 1);
+  renderItinerary();
+}
+
+function renderItinerary() {
+  var el = document.getElementById('itin-list');
+  if (!S.itinerary.length) { el.innerHTML = '<p class="empty">No days planned yet.</p>'; return; }
+  el.innerHTML = S.itinerary.map(d => `
+    <div class="day-block">
+      <div class="day-header">
+        <div>
+          <div class="day-date">${fmtDate(d.date)}</div>
+          <div class="day-title">${d.title}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeDay(${d.id})">Remove</button>
+      </div>
+      <ul class="activity-list">
+        ${d.activities.map((a, i) => `<li>${a} <span onclick="removeActivity(${d.id},${i})" style="color:var(--warm-gray);cursor:pointer;font-size:11px;margin-left:4px">✕</span></li>`).join('')}
+      </ul>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="act-${d.id}" placeholder="Add activity or plan..." style="font-size:13px;padding:6px 10px" onkeydown="if(event.key==='Enter')addActivity(${d.id})" />
+        <button class="btn btn-sm" onclick="addActivity(${d.id})">Add</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── COSTS ──
+function addCost() {
+  var desc = document.getElementById('cost-desc').value.trim();
+  var amt = parseFloat(document.getElementById('cost-amt').value) || 0;
+  if (!desc || !amt) return;
+  var assigns = {};
+  S.guests.forEach(g => { assigns[g.id] = 0; });
+  S.costs.push({ id: Date.now(), desc, amt, assigns });
+  document.getElementById('cost-desc').value = '';
+  document.getElementById('cost-amt').value = '';
+  renderCosts();
+}
+
+function removeCost(id) { S.costs = S.costs.filter(c => c.id !== id); renderCosts(); }
+
+function syncCostAssigns() {
+  S.costs.forEach(c => {
+    S.guests.forEach(g => { if (!(g.id in c.assigns)) c.assigns[g.id] = 0; });
+  });
+  renderCosts();
+}
+
+function updateAssign(costId, guestId, val) {
+  var c = S.costs.find(x => x.id === costId);
+  if (c) c.assigns[guestId] = parseFloat(val) || 0;
+  var rem = remaining(c);
+  var remEl = document.getElementById('rem-' + costId);
+  if (remEl) remEl.textContent = '$' + rem;
+  renderPerPerson();
+}
+
+function remaining(c) {
+  var assigned = Object.values(c.assigns).reduce((a, b) => a + b, 0);
+  return (c.amt - assigned).toFixed(2);
+}
+
+function splitEvenly(costId) {
+  var c = S.costs.find(x => x.id === costId);
+  if (!c || !S.guests.length) return;
+  var each = (c.amt / S.guests.length);
+  S.guests.forEach(g => { c.assigns[g.id] = Math.round(each * 100) / 100; });
+  renderCosts();
+}
+
+function renderCosts() {
+  var el = document.getElementById('cost-list');
+  if (!S.costs.length) { el.innerHTML = '<p class="empty">No expenses added yet.</p>'; updateCostTotal(); renderPerPerson(); return; }
+  el.innerHTML = S.costs.map(c => `
+    <div class="cost-item">
+      <div class="cost-header">
+        <span class="cost-label">${c.desc}</span>
+        <span class="cost-total-badge">$${c.amt.toFixed(2)}</span>
+        <button class="btn btn-ghost btn-sm" onclick="splitEvenly(${c.id})">Split evenly</button>
+        <button class="btn btn-danger btn-sm" onclick="removeCost(${c.id})">Remove</button>
+      </div>
+      ${S.guests.length ? `
+        ${S.guests.map(g => `
+          <div class="assign-row">
+            <div class="avatar" style="width:26px;height:26px;font-size:10px">${ini(g.name)}</div>
+            <span class="assign-name">${g.name}</span>
+            <span style="font-size:12px;color:var(--brown)">$</span>
+            <input type="number" class="assign-input" value="${(c.assigns[g.id]||0).toFixed(2)}" step="0.01" onchange="updateAssign(${c.id},${g.id},this.value)" />
+          </div>`).join('')}
+        <div class="remaining">Remaining: <span id="rem-${c.id}">$${remaining(c)}</span></div>` :
+      '<p class="empty">Add guests first to assign amounts.</p>'}
+    </div>`).join('');
+  updateCostTotal(); renderPerPerson();
+}
+
+function updateCostTotal() {
+  var total = S.costs.reduce((a, c) => a + c.amt, 0);
+  document.getElementById('cost-total-amt').textContent = '$' + total.toFixed(2);
+}
+
+function renderPerPerson() {
+  var el = document.getElementById('per-person-list');
+  if (!S.guests.length) { el.innerHTML = '<p class="empty">Add guests and expenses to see breakdown.</p>'; return; }
+  var pp = {};
+  S.guests.forEach(g => { pp[g.id] = 0; });
+  S.costs.forEach(c => { S.guests.forEach(g => { pp[g.id] += (c.assigns[g.id] || 0); }); });
+  el.innerHTML = S.guests.map(g => `
+    <div class="per-person-row">
+      <div class="avatar">${ini(g.name)}</div>
+      <div>
+        <div style="font-weight:500">${g.name}</div>
+        <div style="font-size:12px;color:var(--brown)">${g.confirmed ? 'Confirmed' : 'Pending'}</div>
+      </div>
+      <span class="per-person-amt">$${pp[g.id].toFixed(2)}</span>
+    </div>`).join('');
+}
+
+// ── DASHBOARD ──
+function tripDays() {
+  var s = document.getElementById('dateStart').value;
+  var e = document.getElementById('dateEnd').value;
+  if (!s || !e) return '—';
+  var d = Math.round((new Date(e) - new Date(s)) / 86400000);
+  return d > 0 ? d : '—';
+}
+
+function renderDash() {
+  var confirmed = S.guests.filter(g => g.confirmed).length;
+  var total = S.costs.reduce((a, c) => a + c.amt, 0);
+  document.getElementById('dash-metrics').innerHTML = `
+    <div class="metric"><div class="m-lbl">Total guests</div><div class="m-val">${S.guests.length}</div></div>
+    <div class="metric"><div class="m-lbl">Confirmed</div><div class="m-val">${confirmed}</div></div>
+    <div class="metric"><div class="m-lbl">Trip length</div><div class="m-val" style="font-size:22px">${tripDays()}${typeof tripDays()==='number'?'d':''}</div></div>
+    <div class="metric"><div class="m-lbl">Total budget</div><div class="m-val" style="font-size:20px">$${total.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})}</div></div>
+  `;
+
+  var rEl = document.getElementById('dash-rsvp');
+  rEl.innerHTML = S.guests.length ? S.guests.map(g => `<div class="dash-row"><span>${g.name}</span><span class="badge ${g.confirmed?'badge-green':'badge-gray'}">${g.confirmed?'Confirmed':'Pending'}</span></div>`).join('') : '<p class="empty">No guests yet.</p>';
+
+  var cEl = document.getElementById('dash-costs');
+  var ctotal = S.costs.reduce((a,c)=>a+c.amt,0);
+  cEl.innerHTML = S.costs.length ? S.costs.map(c=>`<div class="dash-row"><span>${c.desc}</span><span style="font-weight:500">$${c.amt.toFixed(2)}</span></div>`).join('') + `<div class="dash-row" style="font-weight:500;border-top:1px solid var(--warm-gray);margin-top:4px;padding-top:8px"><span>Total</span><span>$${ctotal.toFixed(2)}</span></div>` : '<p class="empty">No expenses yet.</p>';
+
+  var fEl = document.getElementById('dash-flights');
+  fEl.innerHTML = S.flights.length ? S.flights.map(f=>`<div class="dash-row"><span>${f.airline} ${f.num}</span><span style="color:var(--brown);font-size:12px">${f.from} → ${f.to} · ${fmtDate(f.date)}</span></div>`).join('') : '<p class="empty">No flights added.</p>';
+
+  var iEl = document.getElementById('dash-itin');
+  iEl.innerHTML = S.itinerary.length ? S.itinerary.map(d=>`<div class="dash-row"><span>${d.title}</span><span style="color:var(--brown);font-size:12px">${fmtDate(d.date)}</span></div>`).join('') : '<p class="empty">No days planned.</p>';
+}
+
+// init
+renderDash();
+</script>
+</body>
+</html>
